@@ -3,7 +3,7 @@ import time
 
 class PycacheEntry():
     def __init__(self, client, snowflake, entry, fetched_time, max_age, entry_instance):
-        # local reference to client for access to
+        # private reference to client for access to
         # client methods
         self._client = client
 
