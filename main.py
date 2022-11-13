@@ -3,7 +3,7 @@ import time
 
 class PycacheEntry():
     def __init__(self, client, snowflake, entry, fetched_time, max_age, entry_instance):
-        # private reference to client for access to
+        # local reference to client for access to
         # client methods
         self._client = client
 
@@ -200,7 +200,7 @@ class PycacheEntry():
             # `self._value_instance(entry)` is not invalid - I
             # just think it's good process for the requesting client
             # to validate their own data before trying to store it
-            # if PycacheEntry asks for it, it should be defined, no exceptions!
+            # if Cacher asks for it, it should be defined, no exceptions!
             raise AttributeError('Entry cannot be updated: No available \`UPDATE\` method found.')
 
     # wrapper method to serialize entry values
@@ -233,8 +233,7 @@ class PycacheEntry():
 
 
 class Pycache():
-    def __init__(self, client):
-        self._client = client
+    def __init__(self):
         self._cache = dict()
 
     # dict wrapper functions
@@ -243,9 +242,6 @@ class Pycache():
 
     def copy(self):
         return self._cache.copy()
-
-    def fromkeys(self):
-        return self._cache.fromkeys()
 
     def pop(self, idx):
         return self._cache.pop(idx)
@@ -277,7 +273,7 @@ class Pycache():
 
             # clients are expected to update their entries via
             # acceptable methods, so if updates are made to
-            # the value returned, the Pycache may not respect them
+            # the value returned, the cacher may not respect them
             # until updates are explicitely pushed
             return self._cache.get(idx).value
         else:
@@ -319,25 +315,29 @@ class Pycache():
 
     # add a new entry to the cache
     # the client is responsible for assigning an ID to the
-    # new entry, and the Pycache expects this ID to be an
+    # new entry, and the cacher expects this ID to be an
     # instance of a `Pyflake` class
     def add(self, snowflake, entry, fetched_time, max_age, entry_instance):
-        # create an instance of the PycacheEntry class with the client
+        # create an instance of the CacherEntry class with the client
         # provided values
 
         # the client is responsible for handling any exceptions raised
-        # during PycacheEntry construction
+        # during CacherEntry construction
         res = PycacheEntry(self, snowflake, entry, fetched_time, max_age, entry_instance)
+        # we want to check if the entry exists before adding it
+        # because calling the `setdefault()` method returns
+        # the entry regardless of if an insert occured or not
         if not self.get(res.idx):
             # add the newly constructed entry to the cache
-            self._cache.update([(res.idx, res)])
+            # and return only the `value`
+            return self.setdefault(res.idx, res).value
 
-            # finally, return the new entry to the client
-            # requesting clients have no use for our wrapper class
-            # so lets just return the value the client asked us
-            # to store
-            return self.get(res.idx).value
         else:
+            # if the entry already exists in the cache
+            # we want to raise an `AttributeError`
+            # since calling the `setdefault()` method
+            # returns the entry regardless of if an
+            # insert occured or not
             raise AttributeError(f'Entry cannot be added: An entry with the provided ID \`{res.idx}\`already exists in the cache.')
 
     # this method functions differently than `dict.update()`
@@ -345,7 +345,7 @@ class Pycache():
     # method instead of inserting or updating `self._cache`
     # as would be expected with `dict.update()`
     def update(self, idx, entry, fetched_time):
-        # instances of PycacheEntry have a local `update` method
+        # instances of CacherEntry have a local `update` method
         # that method is a pass-thru method that provides some
         # validation in the form of ensuring a valid method
         # to update the entry exists
@@ -402,7 +402,7 @@ class Pycache():
 
         return self.find(is_mutable)
 
-    # methods to return various subsets of immutable
+    # methods to return various subsets of mutable
     # entry values in the cache
 
     def immutable(self):
