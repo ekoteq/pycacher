@@ -402,7 +402,7 @@ class Pycache():
 
         return self.find(is_mutable)
 
-    # methods to return various subsets of mutable
+    # methods to return various subsets of immutable
     # entry values in the cache
 
     def immutable(self):
