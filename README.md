@@ -3,7 +3,7 @@ A simple Python 3.10 entry-based data cacher that supports mutable and immutable
 
 # Features
 - `PycacheEntry` - A wrapper class that allows `Pycache` instances to easily manage cache entries
-- `Pycache` - A `dict` manager class to aid in the management of `PycacheEntries` for their life within the cache
+- `Pycache` - A `dict` manager class to aid in the management of `PycacheEntry`s for their life within the cache
 
 # Requirements
 - `Python` `3.10`
