@@ -57,7 +57,7 @@ Create an entry value that will be stored in the cache. For this example we will
 ```
 Finally, we can add the entry to the cache:
 ```python
-  cache.add(snowflake, entry, fetched_time, 60000, str)
+  cache.add(snowflake, entry, fetched_time, max_age, entry_instance)
 ```
 ## Pycache.get(`idx: int`)
 To `get()` the new entry, we need to have access to its cache key, or the `Pyflake.snowflake` attribute passed to `Pycache` when the entry was first stored.
