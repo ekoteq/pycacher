@@ -200,7 +200,7 @@ class PycacheEntry():
             # `self._value_instance(entry)` is not invalid - I
             # just think it's good process for the requesting client
             # to validate their own data before trying to store it
-            # if Cacher asks for it, it should be defined, no exceptions!
+            # if PycacheEntry asks for it, it should be defined, no exceptions!
             raise AttributeError('Entry cannot be updated: No available \`UPDATE\` method found.')
 
     # wrapper method to serialize entry values
@@ -277,7 +277,7 @@ class Pycache():
 
             # clients are expected to update their entries via
             # acceptable methods, so if updates are made to
-            # the value returned, the cacher may not respect them
+            # the value returned, the Pycache may not respect them
             # until updates are explicitely pushed
             return self._cache.get(idx).value
         else:
@@ -319,14 +319,14 @@ class Pycache():
 
     # add a new entry to the cache
     # the client is responsible for assigning an ID to the
-    # new entry, and the cacher expects this ID to be an
+    # new entry, and the Pycache expects this ID to be an
     # instance of a `Pyflake` class
     def add(self, snowflake, entry, fetched_time, max_age, entry_instance):
-        # create an instance of the CacherEntry class with the client
+        # create an instance of the PycacheEntry class with the client
         # provided values
 
         # the client is responsible for handling any exceptions raised
-        # during CacherEntry construction
+        # during PycacheEntry construction
         res = PycacheEntry(self, snowflake, entry, fetched_time, max_age, entry_instance)
         if not self.get(res.idx):
             # add the newly constructed entry to the cache
@@ -345,7 +345,7 @@ class Pycache():
     # method instead of inserting or updating `self._cache`
     # as would be expected with `dict.update()`
     def update(self, idx, entry, fetched_time):
-        # instances of CacherEntry have a local `update` method
+        # instances of PycacheEntry have a local `update` method
         # that method is a pass-thru method that provides some
         # validation in the form of ensuring a valid method
         # to update the entry exists
