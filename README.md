@@ -76,7 +76,7 @@ Immutable values, such as `str`, `int`, `float`, `bool`, `complex`, `frozenset`,
 ### PycacheEntry.update(`entry: entry_instance`, `fetched_time: int`)
 Additionally, the entry's `update()` method may be called instead, making it easy to update an entry accessed outside of the `Pyclient._cache`
 ```python
-  known_entry.update(updated_entry, fetched_time)
+  found_entry.update(updated_entry, fetched_time)
 ```
 ## Pycache.find(`condition: callable[entry_instance, bool]`)
 To find one or more records that meet a condition, the cache's `find()` method should be called, and a conditional function accepting the entry and returning a `bool` value should be passed.
@@ -90,51 +90,57 @@ To find one or more records that meet a condition, the cache's `find()` method s
       return True
     else:
       return False
-  known_entries = cache.find(is_not_none)
+  found_entries = cache.find(is_not_none)
 ```
 ## Pycache.remove(`snowflake: Pyflake`)
 To remove an entry that exists in the cache, the cache's `remove()` method should be called. Entries do not have a local `remove()` method and should not be removed from an external cache that holds it by calling an internal method.
   
 NOTE: `Pycache.remove()` expects to receive a fully constructed `Pyflake` as an entry ID.
 ```python
-  if len(known_entries) > 0:
-    for entry in known_entries:
-      cache.remove(idx)
+  if len(found_entries) > 0:
+    for entry in found_entries.values():
+      cache.remove(entry._snowflake)
 ```
 ## `dict`-like methods
-There are several methods available in a `Pycache` instance that makes managing the local cache as easy as managing a `dict` without being a direct extension of a `dict` data type.
-  
-`cache.clear()` will clear the cache of all available entries.
+There are several methods available in a `Pycache` instance that makes managing the local `Pycache._cache` as easy as managing a `dict` without being a direct extension of a `dict` data type.
+### Pycache.clear()
+Clears the `Pycache._cache` of all available entries.
 ```python
   cache.clear()
 ```
-`cache.copy()` will return an exact copy of the cache in its current state.
+### Pycache.copy()
+Returns an exact copy of the `Pycache._cache` in its current state.
 
 NOTE: this returns a `dict`, not a `Pycache`.
 ```python
   cache_copy = cache.copy()
 ```  
-`cache.pop(idx)` will remove and return the cache entry with the specified `idx`.
+### Pycache.pop(idx)
+Removes and returns the `Pycache._cache` entry with the specified `idx`.
 ```python
   cache_popped = cache.pop(idx)
 ```  
-`cache.popitem()` will remove and return the last inserted cache entry.
+### Pycache.popitem()
+Removes and returns the last inserted `Pycache._cache` entry.
 ```python
   cache_last = cache.popitem()
 ```  
-`cache.setdefault(idx, value)` will return the cache entry with the specified `idx`, inserting it if it does not exist. This acts like an `upsert` operation.
+### Pycache.setdefault(`idx: int`, `value: dict`)` will return the `Pycache.\_cache` entry with the specified `idx`, inserting it if it does not exist. This acts like an `upsert` operation.
 ```python
   cache_upsert = cache.setdefault(idx, value)
 ```  
-`cache.keys()` will return keys for all cache entries.
+### Pycache.keys()
+Returns keys for all cache entries.
 ```python
   cache_keys = cache.keys()
 ```
-`cache.values()` will return all `entry.value` attribute values.
+### Pycache.values()
+Returns all `entry.value` attribute values.
 ```python
   cache_values = cache.values()
 ```
-`cache.items()` will return `[ k, v ]` pairs of all cache entries.
+### Pycache.items()
+Returns `[ k, v ]` pairs of all cache entries.
 ```python
   cache_items = cache.items()
 ```
@@ -167,7 +173,7 @@ Returns a `dict` of all cache entries that have a `value` attribute containing a
   cache_immutable = cache.immutable()
 ```
 ### Pycache.str()
-Returns a `dict` of all cache entries that have a `value` attribute containing an `str` data type.
+Returns a `dict` of all cache entries that have a `value` attribute containing a `str` data type.
 ```python
   cache_str = cache.str()
 ```
@@ -177,27 +183,27 @@ Returns a `dict` of all cache entries that have a `value` attribute containing a
   cache_int = cache.int()
 ```
 ### Pycache.complex()
-Returns a `dict` of all cache entries that have a `value` attribute containing an `complex` data type.
+Returns a `dict` of all cache entries that have a `value` attribute containing a `complex` data type.
 ```python
   cache_complex = cache.complex()
 ```
 ### Pycache.bool()
-Returns a `dict` of all cache entries that have a `value` attribute containing an `bool` data type.
+Returns a `dict` of all cache entries that have a `value` attribute containing a `bool` data type.
 ```python
   cache_bool = cache.bool()
 ```
 ### Pycache.frozenset()
-Returns a `dict` of all cache entries that have a `value` attribute containing an `frozenset` data type.
+Returns a `dict` of all cache entries that have a `value` attribute containing a `frozenset` data type.
 ```python
   cache_frozenset = cache.frozenset()
 ```
 ### Pycache.float()
-Returns a `dict` of all cache entries that have a `value` attribute containing an `float` data type.
+Returns a `dict` of all cache entries that have a `value` attribute containing a `float` data type.
 ```python
   cache_float = cache.float()
 ```
 ### Pycache.tuple()
-Returns a `dict` of all cache entries that have a `value` attribute containing an `tuple` data type.
+Returns a `dict` of all cache entries that have a `value` attribute containing a `tuple` data type.
 ```python
   cache_tuple = cache.tuple()
 ```
