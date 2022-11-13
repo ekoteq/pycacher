@@ -1,4 +1,4 @@
-import time
+from time import time
 from pyflaker import Pyflake
 
 class PycacheEntry():
@@ -25,7 +25,7 @@ class PycacheEntry():
         # record the creation time of this entry
         # this is to reference the initial time
         # the cache stored this entry
-        self._cached_time = int(time.time() * 1000)
+        self._cached_time = int(time() * 1000)
 
         # the client is responsible for defining when the entry
         # was obtained from its source
@@ -91,7 +91,7 @@ class PycacheEntry():
     # compared to the current timestamp to confirm the
     # age of the record, and report True/False respectively
     def is_stale(self):
-        ts = int(time.time() * 1000)
+        ts = int(time() * 1000)
         print(f'age: {ts}')
         print(f'fetched time: {self._fetched_time}')
         if self._max_age == 0 or self._max_age == None:
