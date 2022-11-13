@@ -7,24 +7,20 @@ A simple Python 3.10 entry-based data cacher that supports mutable and immutable
 
 # Requirements
 - `Python` `3.10`
-
-## Indirect requirements
-- `pyflaker` `v0.0.0` - While not imported, this package is required to generate the `Pyflake` instances requested to identify entries cached by the `Pycache`
+- `pyflaker` `0.0.0` - required to generate the `Pyflake` instances requested by `Pyflake`s identifying cached entries
 
 ## Core modules imported
 - `time` - used to generate timestamp values
-- `math` - used to ensure timestamp values are `int` and not `float`
 
 # Usage
 ## Create a client instance
 An instance of `pyflake_generator` is only required if you need to generate snowflakes IDs. If you already 'own' `Pyflake` instances for the data you intend to store in the cache, importing the `pyflaker` package is unnecessary.
 ```python
   import time
-  import math
   from pyflaker import PyflakeClient, generate_seed
   from pycacher import Pycache
   
-  epoch = math.floor(time.time() * 1000)
+  epoch = int(time.time() * 1000)
   generator = PyflakeClient(epoch)
 
   pid = generate_seed(5)
@@ -44,7 +40,7 @@ Create an entry value that will be stored in the cache. For this example we will
 ```
 `Pycache` requires every entry to define when the data was obtained from the source. Since we created the entry locally, the `fetched_time` is `now` multiplied by `1000` to return the timestamp in `milliseconds`
 ```python
-  fetched_time = math.floor(time.time() * 1000)
+  fetched_time = int(time.time() * 1000)
 ```  
 `Pycache` does not require cached entries to expire, and allows, clients to define an age, in milliseconds, at which an entry may expire.
 ```python
@@ -70,7 +66,7 @@ To update an entry that already exists in the cache, the cache's `update()` meth
 Immutable values, such as `str`, `int`, `float`, `bool`, `complex`, `frozenset`, and `tuple` are not required to have `update()` or `serialize()` methods as these values are updated via attribute value reassignment.
 ```python
   updated_entry = 'updated_test_entry'
-  fetched_time = math.floor(time.time() * 1000)
+  fetched_time = int(time.time() * 1000)
   cache.update(snowflake.snowflake, updated_entry, fetched_time)
 ```
 ### PycacheEntry.update(`entry: entry_instance`, `fetched_time: int`)
