@@ -90,11 +90,14 @@ class PycacheEntry():
     # compared to the current timestamp to confirm the
     # age of the record, and report True/False respectively
     def is_stale(self):
+        ts = math.floor(time.time() * 1000)
+        print(f'age: {ts}')
+        print(f'fetched time: {self._fetched_time}')
         if self._max_age == 0 or self._max_age == None:
             # if the record's max_age is set to zero or none
             # the record should never expire
             return False
-        elif (math.floor(time.time() * 1000) - self._fetched_time) > self._max_age:
+        elif (ts - self._fetched_time) > self._max_age:
             # if the record's age in milliseconds is greater than
             # the allowed max_age in milliseconds, the entry
             # is considered 'stale' or 'expired'
@@ -109,7 +112,7 @@ class PycacheEntry():
     # not happen within the entry. requesting clients should
     # pass already-fetched values to this function and update
     # them with defined local methods
-    def update(self, fetched_time, entry):
+    def update(self, entry, fetched_time):
         # if the value is immutable, it may be updated with
         # simple attribute value reassignment
         if self.is_immutable():
@@ -262,20 +265,12 @@ class Pycache():
         return self._cache.items()
 
     def get(self, idx):
+        # in order to raise an exception if the entry does not exist
+        # we must first check the cache for ist existence
         if self._cache.get(idx):
-            # requesting clients have no use for our wrapper class
-            # so let's just return the value the client asked us
-            # to store
-
-            # if clients really want to peek at the info stored in
-            # the wrapper class, they can call the 'get()' method on
-            # the entry manually via the `_cache` attribute
-
-            # clients are expected to update their entries via
-            # acceptable methods, so if updates are made to
-            # the value returned, the cacher may not respect them
-            # until updates are explicitely pushed
-            return self._cache.get(idx).value
+            return self._cache.get(idx)
+        # if the entry isn't found under the provided ID
+        # an `AttributeError` exception should be raised
         else:
             raise AttributeError(f'Entry cannot be found: No entry with the ID \`{idx}\` could be found in the cache.')
 
@@ -300,7 +295,7 @@ class Pycache():
             # the condition should accept only the entry as an argument
             # and should only return either True or False
             if condition(entry) == True:
-                res.update([(idx, entry.value)])
+                res.update([(idx, entry)])
 
         # if the find operation found more than 'zero' entries
         # matching the requested condition, return the dict
@@ -327,11 +322,14 @@ class Pycache():
         # we want to check if the entry exists before adding it
         # because calling the `setdefault()` method returns
         # the entry regardless of if an insert occured or not
-        if not self.get(res.idx):
+        try:
+            # if the entry doesn't exist, an `AttributeError`
+            # will be raised
+            self.get(res.idx)
+        except AttributeError:
             # add the newly constructed entry to the cache
             # and return only the `value`
             return self.setdefault(res.idx, res).value
-
         else:
             # if the entry already exists in the cache
             # we want to raise an `AttributeError`
@@ -368,9 +366,10 @@ class Pycache():
             if isinstance(snowflake, str) or isinstance(snowflake, int):
                 if self.get(snowflake):
                     self._cache.pop(snowflake)
-        # in all other cases return False
-        snowflake_type = type(snowflake)
-        raise TypeError(f'Entry cannot be removed: Snowflake expected to be an instance of: \`Pyflake\`, \`str\`, or \`int\`. Received instance of: \`{snowflake_type}\`')
+            else:
+                # in all other cases return False
+                snowflake_type = type(snowflake)
+                raise TypeError(f'Entry cannot be removed: Snowflake expected to be an instance of: \`Pyflake\`, \`str\`, or \`int\`. Received instance of: \`{snowflake_type}\`')
 
     # returns all records that are stale, based on the `max_age`
     # of the stored record
