@@ -6,14 +6,14 @@ A simple Python 3.10 entry-based data cacher that supports mutable and immutable
 - `Pycache` - A `dict` manager class to aid in the management of `PycacheEntries` for their life within the cache
 
 # Requirements
-- Python 3.10
+- `Python` `3.10`
 
 ## Indirect requirements
-- `Pyflake` - `v0.0.0` - While not imported, this package is required to generate the `Pyflake` instances requested to identify entries cached by the `Pycache`
+- `Pyflake` `v0.0.0` - While not imported, this package is required to generate the `Pyflake` instances requested to identify entries cached by the `Pycache`
 
 ## Core modules imported
-- time - used to generate timestamp values
-- math - used to ensure timestamp values are `int` and not `float`
+- `time` - used to generate timestamp values
+- `math` - used to ensure timestamp values are `int` and not `float`
 
 # Usage
 ## Create a client instance
