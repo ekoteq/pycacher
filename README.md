@@ -125,7 +125,8 @@ Removes and returns the last inserted `Pycache._cache` entry.
 ```python
   cache_last = cache.popitem()
 ```  
-### Pycache.setdefault(`idx: int`, `value: dict`)` will return the `Pycache.\_cache` entry with the specified `idx`, inserting it if it does not exist. This acts like an `upsert` operation.
+### Pycache.setdefault(`idx: int`, `value: dict`)
+Returns the `Pycache.\_cache` entry with the specified `idx`, inserting it if it does not exist. This acts like an `upsert` operation.
 ```python
   cache_upsert = cache.setdefault(idx, value)
 ```  
