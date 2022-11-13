@@ -24,7 +24,7 @@ An instance of `pyflake_generator` is only required if you need to generate snow
   from pyflake import PyflakeClient, generate_seed
   from pycacher import Pycache
   
-  epoch = time.time()
+  epoch = math.floor(time.time() * 1000)
   generator = PyflakeClient(epoch)
 
   pid = generate_seed(5)
