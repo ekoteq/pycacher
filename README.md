@@ -9,7 +9,7 @@ A simple Python 3.10 entry-based data cacher that supports mutable and immutable
 - `Python` `3.10`
 
 ## Indirect requirements
-- `pyflake` `v0.0.0` - While not imported, this package is required to generate the `Pyflake` instances requested to identify entries cached by the `Pycache`
+- `pyflaker` `v0.0.0` - While not imported, this package is required to generate the `Pyflake` instances requested to identify entries cached by the `Pycache`
 
 ## Core modules imported
 - `time` - used to generate timestamp values
@@ -17,11 +17,11 @@ A simple Python 3.10 entry-based data cacher that supports mutable and immutable
 
 # Usage
 ## Create a client instance
-An instance of `pyflake_generator` is only required if you need to generate snowflakes IDs. If you already 'own' `Pyflake` instances for the data you intend to store in the cache, importing the `pyflake` package is unnecessary.
+An instance of `pyflake_generator` is only required if you need to generate snowflakes IDs. If you already 'own' `Pyflake` instances for the data you intend to store in the cache, importing the `pyflaker` package is unnecessary.
 ```python
   import time
   import math
-  from pyflake import PyflakeClient, generate_seed
+  from pyflaker import PyflakeClient, generate_seed
   from pycacher import Pycache
   
   epoch = math.floor(time.time() * 1000)
