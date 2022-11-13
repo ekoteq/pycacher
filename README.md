@@ -7,7 +7,7 @@ A simple Python 3.10 entry-based data cacher that supports mutable and immutable
 
 # Requirements
 - `Python` `3.10`
-- `pyflaker` `0.0.0` - required to generate the `Pyflake` instances requested by `Pyflake`s identifying cached entries
+- `pyflaker` `0.0.0` - required to generate the `Pyflake` instances requested by `PycacheEntry`s for cache keying and identification
 
 ## Core modules imported
 - `time` - used to generate timestamp values
