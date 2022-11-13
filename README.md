@@ -136,7 +136,7 @@ Returns keys for all cache entries.
   cache_keys = cache.keys()
 ```
 ### Pycache.values()
-Returns all `entry.value` attribute values.
+Returns all `PycacheEntry` values in the cache.
 ```python
   cache_values = cache.values()
 ```
