@@ -1,12 +1,8 @@
-import math
 import time
+from pyflaker import Pyflake
 
 class PycacheEntry():
     def __init__(self, client, snowflake, entry, fetched_time, max_age, entry_instance):
-        # local reference to client for access to
-        # client methods
-        self._client = client
-
         # private reference to the snowflake instance
         # passed to `__init__`
         # this contains the following attributes:
@@ -20,19 +16,24 @@ class PycacheEntry():
             #   in milliseconds by default, or seconds if `fmt` is defined as `s`)
         # the client is responsible for ensuring an instance of a
         # pyflake `Snowflake` class is passed here
-        self._snowflake = snowflake
+        if isinstance(snowflake, Pyflake):
+            self._snowflake = snowflake
+        else:
+            snowflake_type = type(snowflake)
+            raise TypeError(f'Entry cannot be constructed: Snowflake expected to be an instance of: \`Pyflake\`. Received instance of: \`{snowflake_type}\`')
 
         # record the creation time of this entry
         # this is to reference the initial time
         # the cache stored this entry
-        self._cached_time = math.floor(time.time() * 1000)
+        self._cached_time = int(time.time() * 1000)
 
         # the client is responsible for defining when the entry
         # was obtained from its source
         # this value should reflect the last time the
         # value for this entry was fetched or otherwise updated
         # by the client
-        self._fetched_time = fetched_time
+        if isinstance(fetched_time, int) or isinstance(fetched_time, str):
+            self._fetched_time = int(fetched_time)
 
         # the client is responsible for defining when the
         # entry should expire. A value of `None` or `0` will
@@ -90,7 +91,7 @@ class PycacheEntry():
     # compared to the current timestamp to confirm the
     # age of the record, and report True/False respectively
     def is_stale(self):
-        ts = math.floor(time.time() * 1000)
+        ts = int(time.time() * 1000)
         print(f'age: {ts}')
         print(f'fetched time: {self._fetched_time}')
         if self._max_age == 0 or self._max_age == None:
