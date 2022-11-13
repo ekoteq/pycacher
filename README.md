@@ -1,6 +1,9 @@
 # pycacher
 A simple Python 3.10 entry-based data cacher that supports mutable and immutable data types, including user-defined class instances.
 
+# Support
+Discord - `Drix#8355`
+
 # Features
 - `PycacheEntry` - A wrapper class that allows `Pycache` instances to easily manage cache entries
 - `Pycache` - A `dict` manager class to aid in the management of `PycacheEntry`s for their life within the cache
